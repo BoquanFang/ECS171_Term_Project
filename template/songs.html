@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Songs in Playlist</title>
+</head>
+<body>
+    <h1>Songs in Playlist</h1>
+    <ul>
+        {% for song_name in song_names %}
+        <li>{{ song_name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
