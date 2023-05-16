@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Songs</title>
+</head>
+<body>
+    <h1>Songs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Danceability</th>
+                <th>Energy</th>
+                <th>Key</th>
+                <th>Loudness</th>
+                <th>Mode</th>
+                <th>Speechiness</th>
+                <th>Acousticness</th>
+                <th>Instrumentalness</th>
+                <th>Liveness</th>
+                <th>Valence</th>
+                <th>Tempo</th>
+                <th>Duration (ms)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song_name, features in zip(song_names, audio_features) %}
+            <tr>
+                <td>{{ song_name }}</td>
+                <td>{{ features.danceability }}</td>
+                <td>{{ features.energy }}</td>
+                <td>{{ features.key }}</td>
+                <td>{{ features.loudness }}</td>
+                <td>{{ features.mode }}</td>
+                <td>{{ features.speechiness }}</td>
+                <td>{{ features.acousticness }}</td>
+                <td>{{ features.instrumentalness }}</td>
+                <td>{{ features.liveness }}</td>
+                <td>{{ features.valence }}</td>
+                <td>{{ features.tempo }}</td>
+                <td>{{ features.duration_ms }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
