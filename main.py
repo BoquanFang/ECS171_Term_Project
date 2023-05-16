@@ -1,12 +1,18 @@
 from flask import Flask, render_template, request
 import requests
 import re
+import spotipy
+import csv
+from spotipy.oauth2 import SpotifyClientCredentials
+
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
 
 
 @app.route('/get_songs', methods=['POST'])
@@ -35,13 +41,27 @@ def get_songs():
     headers = {'Authorization': f'Bearer {access_token}'}
     response = requests.get(api_url, headers=headers)
     response_data = response.json()
-    # Get the song names from the playlist data
-    song_names = []
-    for item in response_data['items']:
-        song_names.append(item['track']['name'])
 
-    # Render the song names on a new webpage
-    return render_template('songs.html', song_names=song_names)
+    # Get the song names and audio features from the playlist data
+    song_names = []
+    audio_features = []
+    sp = spotipy.Spotify(auth=access_token)
+    for item in response_data['items']:
+        track_uri = item['track']['uri']
+        track_name = item['track']['name']
+        song_names.append(track_name)
+        audio_features.append(sp.audio_features(track_uri)[0])
+
+    # Write the song data to a CSV file
+    with open('songs.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Name', 'Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness', 'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration (ms)'])
+        for name, features in zip(song_names, audio_features):
+            writer.writerow([name, features['danceability'], features['energy'], features['key'], features['loudness'], features['mode'], features['speechiness'], features['acousticness'], features['instrumentalness'], features['liveness'], features['valence'], features['tempo'], features['duration_ms']])
+
+    # Render the song data on a new webpage
+    return render_template('songs.html', song_names=song_names, audio_features=audio_features, zip=zip)
+
 
 
 if __name__ == '__main__':
