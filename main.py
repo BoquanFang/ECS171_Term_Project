@@ -4,6 +4,8 @@ import re
 import spotipy
 import csv
 from spotipy.oauth2 import SpotifyClientCredentials
+import random
+import string
 
 app = Flask(__name__)
 
@@ -59,10 +61,25 @@ def get_songs():
         for name, features in zip(song_names, audio_features):
             writer.writerow([name, features['danceability'], features['energy'], features['key'], features['loudness'], features['mode'], features['speechiness'], features['acousticness'], features['instrumentalness'], features['liveness'], features['valence'], features['tempo'], features['duration_ms']])
 
+    # Now we get a random track.
+    random_search = '%25' + random.choice(string.ascii_letters) + '%25'
+    random_offset = random.randint(0, 1000)
+    random_track_url = f'https://api.spotify.com/v1/search?q={random_search}&type=track&market=US&limit=1&offset={random_offset}'
+    random_response = requests.get(random_track_url, headers=headers).json()['tracks']['items'][0]
+    random_name = random_response['name']
+    random_features = sp.audio_features(random_response['uri'])[0]
+
+    with open('rand_song.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Name', 'Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness', \
+                'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration (ms)'])
+        writer.writerow([random_name, random_features['danceability'], random_features['energy'], random_features['key'], random_features['loudness'], \
+                random_features['mode'], random_features['speechiness'], random_features['acousticness'], random_features['instrumentalness'], \
+                random_features['liveness'], random_features['valence'], random_features['tempo'], random_features['duration_ms']])
+
     # Render the song data on a new webpage
-    return render_template('songs.html', song_names=song_names, audio_features=audio_features, zip=zip)
-
-
+    return render_template('songs.html', song_names=song_names, audio_features=audio_features, zip=zip, \
+            random_name=random_name, random_features=random_features)
 
 if __name__ == '__main__':
     app.run(debug=True)
