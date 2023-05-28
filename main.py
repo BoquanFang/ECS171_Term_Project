@@ -191,7 +191,7 @@ def get_song_data():
     song_url = request.form['song_url']
     # Do the final comparison and give the conclusion
     fit_status = "Not a good fit"
-    if accuracy_val <= 1.645 * sd:
+    if accuracy_val < 1.645 * sd:
         fit_status = "Good fit"
 
 
