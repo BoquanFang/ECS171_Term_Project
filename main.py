@@ -22,6 +22,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.neighbors import KNeighborsClassifier
+import math
 app = Flask(__name__)
 
 
@@ -166,31 +167,23 @@ def get_song_data():
     y_train = scaled_music_dataset['energy_category']
 
     new_song = pd.read_csv('rand_song.csv', encoding='ISO-8859-1')
+    new_song_name = new_song['Name'].iloc[0]
     new_song = new_song.drop(columns=['Name'], axis='columns').dropna()
     new_song = new_song.drop(columns=to_drop, axis=1)
     new_song = new_song.drop('Energy', axis=1)
     new_song.head()
     X_test = new_song
 
-    best_iteration = -1
-    current_highest_accuracy = -1
-    results = {}
-    for i in range(1, len(X_train['Loudness'])):
-        #     print(i, best_iteration, current_highest_accuracy)
-        neigh = KNeighborsClassifier(n_neighbors=i)
-        # The model is properly trained here
-        neigh_fit = neigh.fit(X_train, y_train)
-        pred = neigh.predict(X_test)
-        #     accuracy_val = accuracy_score(y_test, pred)
-        accuracy_val = abs(int(pred) - average_energy_level)
-        results[i] = accuracy_val
-        if (accuracy_val > current_highest_accuracy):
-            current_highest_accuracy = accuracy_val
-            best_iteration = i
-    #         print("Iteration updated", i, best_iteration, current_highest_accuracy)
-    plt.plot(results.keys(), results.values())
-    plt.savefig('static/plot.png')
-    plt.close()
+    i = int(round(math.sqrt(len(X_train['Loudness'])), 0))
+    print(i)
+    neigh = KNeighborsClassifier(n_neighbors=i)
+    # The model is properly trained here
+    neigh_fit = neigh.fit(X_train, y_train)
+    pred = neigh.predict(X_test)
+    accuracy_val = abs(int(pred) - average_energy_level)
+
+
+
 
     # Get the URL of the heatmap image
     plot_url = '/static/plot.png'
@@ -198,8 +191,10 @@ def get_song_data():
     song_url = request.form['song_url']
     # Do the final comparison and give the conclusion
     fit_status = "Not a good fit"
-    if current_highest_accuracy <= sd:
+    if accuracy_val < 1.645 * sd:
         fit_status = "Good fit"
+
+
 
     # Extract the song ID from the URL
     match = re.search('(https://open.spotify.com/track/)(\w+)(\?.*|$)', song_url)
