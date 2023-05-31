@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-import scipy as sp
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 import re
@@ -23,6 +22,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.neighbors import KNeighborsClassifier
 import math
+from scipy.stats import norm
 app = Flask(__name__)
 
 
@@ -130,7 +130,6 @@ def get_song_data():
     for column in scaled_music_corr_abs.columns:
         if scaled_music_corr_abs.loc['Energy', column] < 0.3:
             to_drop.append(column)
-    to_drop
 
     scaled_music['energy_category'] = round(scaled_music['Energy'] / 0.01, 0)
     scaled_music_dataset_first = scaled_music.drop(columns=to_drop, axis=1)
@@ -154,6 +153,9 @@ def get_song_data():
     # Get the URL of the heatmap image
     heatmap_image_url2 = '/static/heatmap2.png'
 
+
+
+
     average_energy_level = scaled_music_dataset['energy_category'].mean()
     sd = scaled_music_dataset['energy_category'].std()
     print(average_energy_level, sd)
@@ -174,6 +176,7 @@ def get_song_data():
     new_song.head()
     X_test = new_song
 
+
     i = int(round(math.sqrt(len(X_train['Loudness'])), 0))
     print(i)
     neigh = KNeighborsClassifier(n_neighbors=i)
@@ -182,11 +185,21 @@ def get_song_data():
     pred = neigh.predict(X_test)
     accuracy_val = abs(int(pred) - average_energy_level)
 
-
-
+    x = np.linspace(average_energy_level - 3 * sd, average_energy_level + 3 * sd, 100)
+    plt.plot(x, norm.pdf(x, average_energy_level, sd), label='Normal Curve')
+    plt.axvline(x=pred, color='red', linestyle='--', label='Predicted Energy Level')
+    plt.axvline(x=average_energy_level - 1.645 * sd, color='green', label='Confidence interval low')
+    plt.axvline(x=average_energy_level + 1.645 * sd, color='green', label='Confidence interval high')
+    plt.title('Prediction on Normal Curve')
+    plt.xlabel('Energy Level')
+    plt.ylabel('Probability Density')
+    plt.legend()
+    plt.savefig('static/interval.png')
+    plt.close()
 
     # Get the URL of the heatmap image
-    plot_url = '/static/plot.png'
+    interval_image = '/static/interval.png'
+
     # Now we get a random track.
     song_url = request.form['song_url']
     # Do the final comparison and give the conclusion
@@ -226,7 +239,7 @@ def get_song_data():
              random_features['duration_ms']])
 
     return render_template('song.html', random_name=random_name, random_features=random_features, heatmap_image_url1=heatmap_image_url1,
-                           heatmap_image_url2=heatmap_image_url2, histplot=histplot, plot_url=plot_url, fit_status=fit_status, new_song_name=random_name)
+                           heatmap_image_url2=heatmap_image_url2, histplot=histplot, fit_status=fit_status,  interval_image = interval_image, new_song_name=random_name)
 
 
 
