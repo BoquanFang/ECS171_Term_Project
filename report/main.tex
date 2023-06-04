@@ -41,9 +41,7 @@ or not. Later, as content recommendation algorithms became stronger and amassed 
 to train on, automatic recommendation methods became a viable way for users of these platforms
 to find new music to listen to without having to listen to all the songs themselves. 
 
-Thus, the problem of this research paper is about determining whether a chosen song is similar enough
-to others in a given playlist to be accepted into that playlist. This can be used to recommend
-new songs to the user based on the contents of their existing playlists; users are more likely
+Thus, the problem of this research paper is about determining whether a chosen song is similar enough to others in a given playlist to be accepted into that playlist. This can be used to recommend new songs to the user based on the contents of their existing playlists; users are more likely
 to enjoy songs that can fit into their existing playlists, especially those they listen to most.
 Additionally, it can be used to generate entirely new playlists for users, starting from a small
 playlist of a few of their favorite songs, and then repeatedly searching for and adding songs that
@@ -70,7 +68,28 @@ This project’s dataset is retrieved by the user level interface from the Spoti
 The attributes energy is the most important attribute, since we will use the energy attribute as an indicator of whether the given song fits well with the playlist. Therefore, exploratory analysis needs to generate a correlation heat and analyze the correlation between every attribute with respect to the energy attribute. The group determines that every attribute which has a correlation that less than 0.2 in absolute value should not be included in the final training set. If those attributes are included in the training set, those attributes will generate noise and overfit the model.
 
 \section{Proposed Methodology}
+To go about determining whether a song would match the energy of a playlist, we decided to do the following steps:
+1. Run the Spotify API in order to get the information for the input playlist and later the song inputted into test the fit for the energy of the playlist.
+2. Preprocess our training set, or the given dataset of our playlist so that we were able to get a more standard method of measurement. 
+3. Run the model and determine an energy category prediction for the new playlist
+4. Determine a conclusion based on the standard determination of the songs in the playlist.
 
+To complete the first step, we visited the spotify for developers website [1]. In this, we were able to create a login key that would allow us to run the API for gathering song data. Here, we decided to parse the URL for the specific guid that would identify the public playlist. After a few more parameters, we were able to get our data and display it on our interface, as well as save the data to a file called `songs.csv`. We also did the same for the new song and saved that to a file called `rand_song.csv`.
+
+From here, we starting focusing on the model and specifications necessary for running the model properly. To do this while we were stilly figuring out the API, we decided to use a practice dataset from Kaggle [2]. Using this set covering the same variables over 20.0k songs, we learned more about the measures and what preprocessing steps we should take in order to have a standard model.
+
+For preprocessing our data, we decided to place all of our energy levels into a category called `energy_categories`. What this did was create the buckets for the classification algorithms to predict the new song's energy level. To do this, we took the original energy between the interval  [0.0, 1.0] and floor divided by 0.01 to have a maximum of 100 energy categories. We chose 0.01 for the most accuracy while still keeping the differences of the dataset and to make all the numbers integers (avoiding 0.5 values) to better classify into buckets. This helped create a more feasible output for the model, while still keeping the values as accurate as possible. We then made a histogram showing the distribution of the `energy_category` values. Here, we realized that, due to the law of large numbers, we would not need to worry too much about the normality of the data and carried on with the data normality assumption. This was due to observing not only the Kaggle dataset, but multiple playlists pulled from the spotify interface, all showing similar to bell curve histograms
+
+We then dropped the `Name` variable for having a more blind analysis, so that the model would not confuse the `Name` as one of the evaluatory measures and skew the ouptut. From here, we decided to 
+create the correlation heatmap of our data, so that we could determine the necessary variables for a more accurate analysis. We decided to do this for two endpoint reasons. The first reason was that we did not want to include all of the variables in our analysis. Some of the variables like `Mode` and `Instrumentalness` were displaying really low correlations to the energy with our Kaggle dataset. Including these variables meant that we were introducing more noise to our model rather than giving it data to make a more accurate analysis. The second was to determine a sort of pattern that would tell us how to determine which variables were best for our model. To elaborate, we found that some variables correlate more than others when the playlist would change. Because of the lack of a static training set, we had to set preprocessing patterns such that we would be able to handle any given playlist. This meant that we would use a threshold for the correlation to the original `Energy` variable so that we would be able to accommodate for all different correlation patterns. We chose the threshold 0.2 because we saw that for most data, we would have more than 2 variables for our X when we would have the threshold, so that became our sweet spot. A higher threshold meant we were not getting the necessary amount of variables for an accurate prediction, while the lower threshold meant having too much noise. 
+
+After removing the unneccessary variables using a more dynamic code, we decided to plot the heatmap again to check that all the necessary variables were still in the dataset, and display which variabls are being used. From there we ran our model.
+
+We chose two proposed methodologies when working on determining our conclusion. 
+One of the methodologies was running a polynomial regression model on our data.
+The polynomial regression model is a model that follows a regression sense, in which each variable is assigned a constant to be multiplied to, so following the:
+
+The other method proposed was running a KNN model [3]. Described more in the source, this model is essentially classifying a new point based on the information from the training set for a certain number of neighbors. If this means that the number of neighbors is from category A, then the model will classify A, whereas if the neighbors are category B, then classify category B. This is classified using the euclidian distance of the points as a vector(ie. each of the songs is a seperate vector of all the x variables) For this model, we decided to keep our model as dynamic as possible and started looking at ways we could determine the k number of neighbors needed for the model. We decided on a sqrt(n) [4] neighbors. Essentially, this means if we have 100 songs in our playlist, the model looks at the 10 nearest neighbors (but if the playlist number is something like 90, or a number between 2 perfect squares, it will round using the 0.5 rule).
 
 \section{Experimental Results}
 
