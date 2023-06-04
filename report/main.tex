@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{listings}
-
+\usepackage{url} % Add the url package
 \usepackage{titlesec}
 
 \documentclass{article}
@@ -10,11 +10,12 @@
 
 \usepackage{titlesec}
 
-\title{ECS171 group8 report}
+\title{ECS171 Group 8 Report}
 \author{Boquan Fang, Sage Deo, Ishita Dutta, Zhuo Chen}
 \date{June 2023}
+% \url{https://github.com/BoquanFang/ECS171_Term_Project.git}
 
-\begin{document}
+
 
 \maketitle
 
@@ -123,10 +124,10 @@ music.html: This file will include essential code for integrating with the Spoti
 songs.html: This file is essential for displaying song attributes and allowing users to select a single song as a test case. It should include HTML elements to show song details such as title, artist, album, and other relevant information.
 
 song.html: This file will display detailed information about a single song, including its attributes and several graphs to support your model. Additionally, it can include the final test result to assess the performance of your model. It uses HTML elements like headings, paragraphs, charts, or visualizations to present the information effectively.
-\subsection{Figure 1}
+% \subsection{Figure 1}
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{1.png}
+\includegraphics[width=1\textwidth]{1.png}
 \caption{This is the welcome page of the user interface}
 The user could enter any playlist URL here.
 \label{fig:enter-label}
@@ -135,10 +136,6 @@ The user could enter any playlist URL here.
 \centering
 \includegraphics[width=1\textwidth]{2.png}
 \caption{This is the attribute that we extract from the playlist.}
-\label{fig:enter-label}
-\end{figure}
-\begin{figure}[h]
-\centering
 \includegraphics[width=0.5\textwidth]{3.png}
 \caption{The user can enter any song's URL as the test dataset here.}
 \includegraphics[width=1\textwidth]{4.png}
@@ -147,7 +144,7 @@ The user could enter any playlist URL here.
 \caption{Finally, it shows the result at the bottom of the page about whether this song's style is similar to our playlist.}
 \label{fig:enter-label}
 \end{figure}
-
-% \section{Conclusion and Discussion}
+\clearpage
+\section{Conclusion and Discussion}
 
 \end{document}
