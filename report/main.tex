@@ -11,6 +11,7 @@
 \title{ECS171 Group 8 Report}
 \author{Boquan Fang, Sage Deo, Ishita Dutta, Zhuo Chen}
 \date{June 2023}
+
 % \url{https://github.com/BoquanFang/ECS171_Term_Project.git}
 
 \begin{document}
@@ -77,7 +78,7 @@ To go about determining whether a song would match the energy of a playlist, we 
     \item Run the model and determine an energy category prediction for the new playlist
     \item Determine a conclusion based on the standard determination of the songs in the playlist.
 \end{enumerate} 
-\\
+
 To complete the first step, we visited the Spotify for Developers website [1]. In this, we were able to create a login key that would allow us to run the API for gathering song data. Here, we decided to parse the URL for the specific guid that would identify the public playlist. After a few more parameters, we were able to get our data and display it on our interface, as well as save the data to a file called \textbf{songs.csv}. We also did the same for the new song and saved that to a file called \textbf{rand\_song.csv}.
 \\\\
 From here, we started focusing on the model and specifications necessary for running the model properly. To do this while we were still figuring out the API, we decided to use a practice dataset from Kaggle [2]. Using this set covering the same variables over 20.0k songs, we learned more about the measures and what preprocessing steps we should take in order to have a standard model.For preprocessing our data, we decided to place all of our energy levels into a category called $`energy\_categories`$. What this did was create the buckets for the classification algorithms to predict the new song's energy level. To do this, we took the original energy between the interval  $[0.0, 1.0]$ and floor divided by 0.01 to have a maximum of 100 energy categories. We chose 0.01 for the most accuracy while still keeping the differences of the dataset and to make all the numbers integers (avoiding 0.5 values) to better classify into buckets. This helped create a more feasible output for the model, while still keeping the values as accurate as possible. We then made a histogram showing the distribution of the $`energy\_category`$ values. Here, we realized that, due to the law of large numbers, we would not need to worry too much about the normality of the data and carried on with the data normality assumption. This was due to observing not only the Kaggle dataset, but multiple playlists pulled from the spotify interface, all showing similar to bell curve histograms. We then dropped the $`Name`$ variable for having a more blind analysis, so that the model would not confuse the $`Name`$ as one of the evaluatory measures and skew the ouptut. From here, we decided to 
@@ -129,8 +130,9 @@ You should first make a get request to the API URL. Then, parse the response to 
         model's performance. It uses HTML elements like headings, paragraphs,
         charts, or visualizations to present the information effectively.
 \end{itemize}
-\\
-This is explained in order by the figures in section 8. Figure 1 captures the link to the playlist and starts gathering data. We then move to Figure 2, in which we display the information for all of our songs on the playlist for the user to verify the correct songs being pulled. We scroll
+This is explained in order by the figures in section 8. Figure 1 captures the link to the playlist and starts gathering data. We then move to Figure 2, in which we display the information for all of our songs on the playlist for the user to verify the correct songs being pulled. We scroll down to Figure 3, in which we provide the Spotify link of the new song we are trying to test for. This makes our data dynamic, as our training and testing set are both provided by our user, making our model more streamlined to handle any kind of playlist regardless of mood, or language. Figure 4 starts displaying our results, which include the original heatmap of the data, then the remade heatmap of the dropped variables as well as the distribution of the histogram of the playlist song $energy\_category$ values. Scrolling down again, Figure 5 displays the normal curve of our Z test as well as our conclusion.
+
+
 \section{Conclusion and Discussion}
 Comparing the results of the two models, we found that the KNN model was more consistent and accurate, so we decided to build our conclusions from the KNN model. In order to build our conclusion, we decided to compare the playlist energy mean to the classified prediction. In this, we took the mean and standard deviation of the $energy\_categories$ of the playlist before making them factor buckets. At the end of the model, we took the result and ran a Z-test of the prediction to the mean of the playlist (this was done with the same normality assumption for the histogram) and plotted the results in Figure 5. The green lines indicated the 90\% confidence interval boundaries. The positioning of the red line would give us the conclusion for that song in relation to the given playlist. What this meant was that if the red line was inside the green lines, it was similar in energy to 90\% of the song data, else it was in the outlying 10\% of the energy of the songs in the playlist. We would determine the songs outside of the lines as "not a good fit" for the playlist, as we would have to be more careful about the placement of these songs in the playlist in relation to other songs. Songs within the green lines were "a good fit" for the playlist because there was a lower worry about the location placement of that song in the playlist in relation to other songs in the playlist.                                                                                                                               The conclusions were drawn based on the KNN model's predictions, which were compared to the playlist's energy mean. The positioning of the red line in relation to the green lines determined whether a song was a good fit or not.
 
@@ -158,5 +160,18 @@ The user could enter any playlist URL here.
 \label{fig:enter-label}
 \end{figure}
 
-
+\clearpage
+\section{Sources Cited}
+\begin{enumerate}
+    \item
+    Analytics Vidhya. "Traversing the Trinity of Statistical Inference – Part 2: Confidence Intervals." Analytics Vidhya, Analytics Vidhya Pvt. Ltd., 15 June 2021, https://www.analyticsvidhya.com/blog/2021/06/traversing-the-trinity-of-statistical-inference-part-2-confidence-intervals/.
+    \item
+    Chattopadhyay, Manojit. "How to Find the Optimal Value of K in KNN." Towards Data Science, Towards Data Science, 7 Nov. 2019, https://towardsdatascience.com/how-to-find-the-optimal-value-of-k-in-knn-35d936e554eb.
+    \item 
+    Noor, Muhammad. "Statistical Inference in Big Data Era." DiVA Portal, Uppsala University, 2015, https://www.diva-portal.org/smash/get/diva2:850112/FULLTEXT01.pdf.
+    \item 
+    Rastelli, Salvatore. "Spotify and YouTube." Kaggle, Kaggle, n.d., https://www.kaggle.com/datasets/salvatorerastelli/spotify-and-youtube.
+    \item 
+    Spotify. "Web API." Spotify for Developers, Spotify AB, n.d., https://developer.spotify.com/documentation/web-api.
+\end{enumerate}
 \end{document}
