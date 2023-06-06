@@ -47,6 +47,8 @@ fit the energy of the newly-generated playlist. This creates completely new full
 with consistent energy and tone and potentially new songs that the user has not listened to before.
 This will create a novel but still enjoyable listening experience. 
 
+% TODO: cite this better
+% https://www.diva-portal.org/smash/get/diva2:850112/FULLTEXT01.pdf
 \section{Literature Review}
 Some study has been done on Spotify data. For example, Nijkamp et al. used the Spotify API
 to investigate whether a song's popularity could be predicted based on its other features and found
@@ -59,7 +61,9 @@ songs into playlists.
 One instance of using machine learning to recommend songs rather than predict their popularity is
 Alexander Bricken's Gaussian Mixture model which recommend songs based on their Spotify API
 features. Though this is not exactly the same as determining whether a song fits into a playlist,
-it is similar and a useful starting point.
+it is similar and a useful starting point. Additionally, Aalto et al. examined the problem of 
+playlist construction using PCA and approximate nearest-neighbors and found that their model 
+outperformed human curators in qualitative testing.
 
 \section{Dataset Description and Exploratory Analysis}
 This project’s dataset is retrieved by the user-level interface from the Spotify developer API. With two given URLs to a playlist and a song, the user-level interface could access the Spotify developer API and save the data for both the playlist and the given song in a CSV file. The number of rows is depended on how many songs a given playlist has. The Spotify developer API provides thirteen attributes for a given song: name, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, and duration. The name represents the name of a given song and that would not be considered in our exploratory data analysis part. Danceability “describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.” Energy represents “a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity.” The key represents the track that a given music is in. Loudness shows the overall loudness of a song in decibels.  Mode indicates “the modality (major or minor) of a track, the type of scale from which its melodic content is derived”. Speechiness indicates the presence of oral spoken words in the given song. Acousticness is the confidence interval of the track in terms of acoustic. Instrumentalness “predicts whether a track contains no vocals.” Liveness detects “the presence of an audience in the recording.” Valence is “a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track.” Temp covers “the overall estimated tempo of a track in beats per minute (BPM).” The attributes duration indicates the duration of the songs in millisecond. 
