@@ -1,4 +1,4 @@
-Prerequisite:
+Running Process (Run the code in pycharm)
     1. Get the intended Spotify playlist URL and the given song URL read.
     2. Go into the direcotry where the main.py is located. Make sure that the
         subdirectory templates is there, and the html files is located in that
